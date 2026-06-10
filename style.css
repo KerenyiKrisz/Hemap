@@ -1,0 +1,297 @@
+/* ============================================================
+   HEMA edzéstérkép – stílus
+   Vizuális irány: acélpenge + pergamen + patinás arany.
+   A vívókönyvek (Fechtbücher) világa, modern fegyelemmel.
+   ============================================================ */
+
+:root {
+  --steel-deep:   #14171c;   /* kovácsolt sötét acél – háttér */
+  --steel:        #1d222a;   /* panel */
+  --steel-edge:   #2c333d;   /* szegély */
+  --parchment:    #efe6d3;   /* pergamen – fő szöveg */
+  --parchment-dim:#b9ad95;   /* halványabb szöveg */
+  --gold:         #c8a24a;   /* patinás arany – kiemelés */
+  --gold-bright:  #e0bd63;
+  --blade:        #8da3b8;   /* hideg pengefény */
+  --ink:          #0e1014;
+
+  --r: 10px;
+  --shadow: 0 18px 50px -18px rgba(0,0,0,.7);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--steel-deep);
+  color: var(--parchment);
+  -webkit-font-smoothing: antialiased;
+}
+
+.map-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ---------- Fejléc ---------- */
+.map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: .85rem 1.4rem;
+  background: linear-gradient(180deg, #191d24, #14171c);
+  border-bottom: 1px solid var(--steel-edge);
+  position: relative;
+  z-index: 1100;
+  flex-wrap: wrap;
+}
+.map-header::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: .5;
+}
+
+.header-mark { display: flex; align-items: center; gap: .85rem; }
+
+.sword-icon {
+  width: 34px; height: 34px;
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.header-text h1 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: .01em;
+  color: var(--parchment);
+}
+.header-text p {
+  margin: .12rem 0 0;
+  font-size: .76rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--parchment-dim);
+}
+
+.header-controls { display: flex; align-items: center; gap: 1rem; }
+
+.search-field input {
+  width: 260px;
+  max-width: 50vw;
+  padding: .55rem .9rem;
+  border: 1px solid var(--steel-edge);
+  border-radius: var(--r);
+  background: var(--ink);
+  color: var(--parchment);
+  font-size: .9rem;
+  font-family: inherit;
+  transition: border-color .2s, box-shadow .2s;
+}
+.search-field input::placeholder { color: #6f6a5e; }
+.search-field input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(200,162,74,.16);
+}
+
+.club-count {
+  font-size: .78rem;
+  color: var(--parchment-dim);
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.club-count b { color: var(--gold-bright); font-weight: 600; }
+
+/* ---------- Térkép ---------- */
+#map {
+  flex: 1;
+  background: var(--steel-deep);
+  z-index: 1;
+}
+
+/* A csempék kissé hűvös, "vasalt" tónust kapnak, hogy illeszkedjenek a témához */
+.leaflet-tile-pane { filter: saturate(.82) brightness(.94) contrast(1.04); }
+
+/* ---------- Pötty (marker) ---------- */
+.hema-pin {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 55%, #8c6d28 100%);
+  border: 2px solid var(--ink);
+  box-shadow: 0 0 0 2px rgba(200,162,74,.35), 0 3px 8px rgba(0,0,0,.5);
+  cursor: pointer;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.hema-pin:hover,
+.hema-pin.is-active {
+  transform: scale(1.32);
+  box-shadow: 0 0 0 3px rgba(224,189,99,.55), 0 4px 14px rgba(0,0,0,.6);
+}
+
+/* Több helyszín egy klubnál ne olvadjon össze – cluster szám */
+.cluster-pin {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 60%, #7d5f22 100%);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: .82rem;
+  box-shadow: 0 0 0 2px rgba(200,162,74,.35), 0 3px 10px rgba(0,0,0,.55);
+  cursor: pointer;
+  transition: transform .16s ease;
+}
+.cluster-pin:hover { transform: scale(1.12); }
+
+/* ---------- Infobox (popup) ---------- */
+.leaflet-popup-content-wrapper {
+  background: linear-gradient(180deg, #20252e, #1a1e25);
+  color: var(--parchment);
+  border: 1px solid var(--steel-edge);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: 0;
+}
+.leaflet-popup-content { margin: 0; width: 270px !important; }
+.leaflet-popup-tip { background: #1a1e25; border: 1px solid var(--steel-edge); }
+.leaflet-popup-close-button {
+  color: var(--parchment-dim) !important;
+  padding: 8px 9px 0 0 !important;
+}
+.leaflet-popup-close-button:hover { color: var(--gold-bright) !important; }
+
+.info {
+  padding: 1rem 1.1rem 1.05rem;
+}
+.info-top {
+  display: flex; align-items: flex-start; gap: .7rem;
+  margin-bottom: .7rem;
+}
+.info-logo {
+  width: 42px; height: 42px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--ink);
+  border: 1px solid var(--steel-edge);
+  flex-shrink: 0;
+}
+.info-title {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 600;
+  font-size: 1.22rem;
+  line-height: 1.12;
+  margin: 0;
+  color: var(--parchment);
+}
+.info-venue {
+  font-size: .76rem;
+  color: var(--gold-bright);
+  letter-spacing: .04em;
+  margin-top: .15rem;
+}
+
+.info-rows { display: grid; gap: .42rem; margin: .2rem 0 .9rem; }
+.info-row {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: .55rem;
+  align-items: start;
+  font-size: .82rem;
+  line-height: 1.35;
+  color: var(--parchment);
+}
+.info-row svg {
+  width: 15px; height: 15px;
+  stroke: var(--blade);
+  fill: none;
+  stroke-width: 1.5;
+  margin-top: .12rem;
+}
+.info-row .muted { color: var(--parchment-dim); }
+
+.info-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  width: 100%;
+  justify-content: center;
+  padding: .6rem .9rem;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  color: var(--ink);
+  font-weight: 600;
+  font-size: .86rem;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: filter .18s, transform .12s;
+}
+.info-cta:hover { filter: brightness(1.07); }
+.info-cta:active { transform: translateY(1px); }
+.info-cta svg { width: 15px; height: 15px; stroke: var(--ink); fill: none; stroke-width: 1.8; }
+
+/* Tooltip (hover infobox a marker felett) */
+.leaflet-tooltip.hema-tip {
+  background: #1a1e25;
+  color: var(--parchment);
+  border: 1px solid var(--gold);
+  border-radius: 7px;
+  padding: .4rem .65rem;
+  font-family: "Inter", sans-serif;
+  font-size: .8rem;
+  box-shadow: 0 8px 22px -8px rgba(0,0,0,.7);
+}
+.leaflet-tooltip.hema-tip::before { border-top-color: var(--gold); }
+.hema-tip strong { color: var(--gold-bright); font-weight: 600; }
+.hema-tip small { color: var(--parchment-dim); display: block; margin-top: 1px; }
+
+/* ---------- Lábléc ---------- */
+.map-footer {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem 1.4rem;
+  font-size: .72rem;
+  color: var(--parchment-dim);
+  background: #14171c;
+  border-top: 1px solid var(--steel-edge);
+}
+.map-footer a { color: var(--gold); text-decoration: none; }
+.map-footer a:hover { color: var(--gold-bright); text-decoration: underline; }
+.footer-sep { opacity: .4; }
+
+/* Leaflet vezérlők témázása */
+.leaflet-bar a {
+  background: var(--steel);
+  color: var(--parchment);
+  border-bottom-color: var(--steel-edge);
+}
+.leaflet-bar a:hover { background: var(--steel-edge); color: var(--gold-bright); }
+.leaflet-control-attribution { display: none; } /* saját láblécünk van */
+
+/* ---------- Reszponzív ---------- */
+@media (max-width: 640px) {
+  .map-header { gap: .7rem; padding: .7rem 1rem; }
+  .header-text h1 { font-size: 1.25rem; }
+  .header-controls { width: 100%; justify-content: space-between; }
+  .search-field input { width: 100%; max-width: none; flex: 1; }
+  .club-count { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

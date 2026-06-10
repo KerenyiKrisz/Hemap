@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beágyazási példa – HEMA edzéstérkép</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 880px; margin: 2rem auto; padding: 0 1rem; color: #222; line-height: 1.6; }
+    code { background: #f0eee8; padding: .15em .4em; border-radius: 4px; font-size: .9em; }
+    pre { background: #1d222a; color: #efe6d3; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+    .demo-frame { width: 100%; height: 640px; border: 0; border-radius: 12px; box-shadow: 0 8px 30px -12px rgba(0,0,0,.3); }
+    h1 { font-size: 1.6rem; }
+  </style>
+</head>
+<body>
+  <h1>Így néz ki beágyazva</h1>
+  <p>
+    Ez a fájl megmutatja, hogyan jelenik meg a térkép egy oldalba ágyazva.
+    A WordPress oldaladon egy <strong>„Egyéni HTML” blokkba</strong> illeszd be az
+    alábbi kódot — cseréld ki a <code>src</code> címet a saját GitHub Pages
+    (vagy tárhely) URL-edre:
+  </p>
+
+  <pre>&lt;iframe
+  src="https://FELHASZNALONEV.github.io/hema-terkep/"
+  style="width:100%;height:640px;border:0;border-radius:12px"
+  loading="lazy"
+  title="HEMA edzéstérkép"&gt;
+&lt;/iframe&gt;</pre>
+
+  <p>Eredmény (itt épp a helyi <code>index.html</code>-t mutatja):</p>
+
+  <iframe class="demo-frame" src="index.html" title="HEMA edzéstérkép" loading="lazy"></iframe>
+
+  <p style="margin-top:1.5rem;color:#666;font-size:.9rem">
+    Tipp: a <code>height</code> értéket szabadon állíthatod. Mobilon a 640px körüli
+    érték kényelmes; ha az oldalad keskeny, 520–600px is elég.
+  </p>
+</body>
+</html>
