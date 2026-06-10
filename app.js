@@ -165,7 +165,7 @@ function updateCount(clubs) {
 }
 
 /* Betöltés */
-fetch("clubs.json")
+fetch("data/clubs.json")
   .then((r) => {
     if (!r.ok) throw new Error("Nem sikerült betölteni az adatokat");
     return r.json();
